@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Do You Love Me?</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #ffe6e6;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        flex-direction: column;
+        margin: 0;
+        overflow: hidden;
+    }
+
+    /* Falling hearts background */
+    .heart-fall {
+        position: fixed;
+        top: -10px;
+        color: red;
+        font-size: 20px;
+        animation: fall linear infinite;
+    }
+
+    @keyframes fall {
+        0% { transform: translateY(-10px) rotate(0deg); opacity: 1; }
+        100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+    }
+
+    .question-container, .result-container {
+        text-align: center;
+        z-index: 2;
+        position: relative;
+    }
+    .button-container {
+        margin-top: 20px;
+        position: relative;
+        height: 150px;
+    }
+    button {
+        padding: 10px 20px;
+        font-size: 18px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        margin: 10px;
+        position: absolute;
+    }
+    .yes-btn {
+        background-color: #ff4d4d;
+        color: white;
+        position: static;
+    }
+    .no-btn {
+        background-color: #666;
+        color: white;
+    }
+    /* Heart shape for result */
+    .heart {
+        position: relative;
+        width: 100px;
+        height: 90px;
+        margin: 30px auto;
+    }
+    .heart:before,
+    .heart:after {
+        content: "";
+        position: absolute;
+        top: 0;
+        width: 52px;
+        height: 80px;
+        background: red;
+        border-radius: 50px 50px 0 0;
+    }
+    .heart:before {
+        left: 50px;
+        transform: rotate(-45deg);
+        transform-origin: 0 100%;
+    }
+    .heart:after {
+        left: 0;
+        transform: rotate(45deg);
+        transform-origin: 100% 100%;
+    }
+    video {
+        width: 200px;
+        border-radius: 10px;
+    }
+</style>
+</head>
+<body>
+
+    <!-- Falling hearts will be inserted here by JS -->
+
+    <div class="question-container" id="questionBox">
+        <img src="love.jpg" width="200"loop autoplay muted></image>
+        <h2>Do you love me?</h2>
+        <div class="button-container">
+            <button class="yes-btn" onclick="showResult()">Yes</button>
+            <button class="no-btn" id="noBtn">No</button>
+        </div>
+    </div>
+
+    <div class="result-container" id="resultBox" style="display:none;">
+        <img src="huy.jpg" width="200" loop autoplay muted></image>
+        <h2>I knew it 😍🔥</h2>
+        <div class="heart"></div>
+    </div>
+
+    <script>
+        function showResult() {
+            document.getElementById("questionBox").style.display = "none";
+            document.getElementById("resultBox").style.display = "block";
+            clearInterval(moveInterval);
+        }
+
+        const noBtn = document.getElementById("noBtn");
+        const container = document.querySelector(".button-container");
+
+        function moveButtonRandomly() {
+            const maxX = container.clientWidth - noBtn.clientWidth;
+            const maxY = container.clientHeight - noBtn.clientHeight;
+            const x = Math.random() * maxX;
+            const y = Math.random() * maxY;
+            noBtn.style.left = `${x}px`;
+            noBtn.style.top = `${y}px`;
+        }
+        const moveInterval = setInterval(moveButtonRandomly, 500);
+
+        // Falling hearts
+        function createHeart() {
+            const heart = document.createElement("div");
+            heart.classList.add("heart-fall");
+            heart.innerHTML = "❤️";
+            heart.style.left = Math.random() * 100 + "vw";
+            heart.style.fontSize = Math.random() * 20 + 10 + "px";
+            heart.style.animationDuration = Math.random() * 3 + 2 + "s";
+            document.body.appendChild(heart);
+            setTimeout(() => {
+                heart.remove();
+            }, 5000);
+        }
+        setInterval(createHeart, 300);
+    </script>
+
+</body>
+</html>
