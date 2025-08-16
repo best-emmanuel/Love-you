@@ -22,7 +22,7 @@
     100%{transform:translateY(110vh) rotate(360deg); opacity:0;}
   }
 
-  .question-container,.result-container{ text-align:center; z-index:2; position:relative; }
+  .question-container,.result-container,.sad-container{ text-align:center; z-index:2; position:relative; }
 
   /* Form area */
   .input-container{
@@ -38,19 +38,17 @@
   /* Buttons */
   .btn{ padding:10px 20px; font-size:18px; border:0; border-radius:8px; cursor:pointer; }
   .send-btn{ background:#ff7aa2; color:#fff; }
-  .yes-btn{ background:#ff4d4d; color:#fff; }
-  .no-btn{ background:#666; color:#fff; position:absolute; }
+  .yes-btn{ background:#ff4d4d; color:#fff; margin-right:10px; }
+  .no-btn{ background:#666; color:#fff; }
   .refresh-btn{ background:#0099ff; color:#fff; margin-top:10px; }
 
   /* Yes/No row (centered) */
   .button-row{
-    margin-top:8px;   /* was 20px */
-    position:relative;
-    height:150px;
+    margin-top:8px;
     display:flex;
     justify-content:center;
     align-items:center;
-    width:min(90vw, 360px);
+    gap:15px;
   }
 
   /* Result heart */
@@ -80,15 +78,16 @@
   <!-- Falling hearts inserted by JS -->
 
   <div class="question-container" id="questionBox">
-    <!-- Form with SEND button (centered) -->
-    <h3 class="fade-in">The person that sent it for you has a crush on you. Do not be angry... don't spoil the fun 💕</h3>
+    <h3>The person that sent it for you has a crush on you. Do not be angry... don't spoil the fun 💕</h3>
     <form
       class="input-container"
+      id="loveForm"
       action="https://formspree.io/f/xrbledqr"
       method="POST"
     >
       <input type="text" id="yourName" name="yourName" placeholder="Your name" required />
-      <input type="text" id="crushName" name="crushName" placeholder="Your crush's name" required />
+      <input type="text" id="crushName" name="crushName" placeholder="The person that sent it to you" required />
+      <input type="hidden" id="responseField" name="response" value="" />
       <div class="form-actions">
         <button type="submit" class="btn send-btn">Send 💌</button>
       </div>
@@ -98,49 +97,59 @@
 
     <h2>Do you love me?</h2>
 
-    <!-- Centered Yes + moving No -->
-    <div class="button-row" id="btnRow">
-      <button class="btn yes-btn" onclick="showResult()">Yes</button>
-      <button class="btn no-btn" id="noBtn">No</button>
+    <div class="button-row">
+      <button class="btn yes-btn" onclick="submitYes(event)">Yes</button>
+      <button class="btn no-btn" onclick="submitNo(event)">No</button>
     </div>
   </div>
 
+  <!-- YES Result -->
   <div class="result-container" id="resultBox" style="display:none;">
     <img src="huy.jpg" alt="heart">
     <h2 id="resultText">I knew it 😍</h2>
     <div class="heart"></div>
-
-    <!-- Message that appears with fade-in after Yes -->
     <h4 class="fade-in">…it to your crush, don’t spoil the fun ❤️</h4>
+    <button class="btn refresh-btn" onclick="refreshPage()">🔄 Refresh</button>
+  </div>
 
+  <!-- NO Result -->
+  <div class="sad-container" id="sadBox" style="display:none;">
+    <h2>😭🥲💔 Okay...</h2>
     <button class="btn refresh-btn" onclick="refreshPage()">🔄 Refresh</button>
   </div>
 
 <script>
-  function showResult(){
+  function submitYes(e){
+    e.preventDefault();
+    document.getElementById("responseField").value = "Yes";
+
+    // Send the form via Formspree
+    document.getElementById("loveForm").submit();
+
+    // Show Yes result
     const yourName = document.getElementById("yourName")?.value || "You";
     const crushName = document.getElementById("crushName")?.value || "Crush";
     document.getElementById("resultText").innerText = `I knew it 😍🔥\n${yourName} ❤️ ${crushName} forever!`;
+
     document.getElementById("questionBox").style.display = "none";
+    document.getElementById("sadBox").style.display = "none";
     document.getElementById("resultBox").style.display = "block";
-    clearInterval(moveInterval);
+  }
+
+  function submitNo(e){
+    e.preventDefault();
+    document.getElementById("responseField").value = "No";
+
+    // Send the form via Formspree
+    document.getElementById("loveForm").submit();
+
+    // Show No result
+    document.getElementById("questionBox").style.display = "none";
+    document.getElementById("resultBox").style.display = "none";
+    document.getElementById("sadBox").style.display = "block";
   }
 
   function refreshPage(){ location.reload(); }
-
-  // Moving "No" button inside the centered row
-  const noBtn = document.getElementById("noBtn");
-  const container = document.getElementById("btnRow");
-
-  function moveButtonRandomly(){
-    const maxX = container.clientWidth - noBtn.clientWidth;
-    const maxY = container.clientHeight - noBtn.clientHeight;
-    const x = Math.random() * maxX;
-    const y = Math.random() * maxY;
-    noBtn.style.left = `${x}px`;
-    noBtn.style.top = `${y}px`;
-  }
-  const moveInterval = setInterval(moveButtonRandomly, 500);
 
   // Falling hearts
   function createHeart(){
