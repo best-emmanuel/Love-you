@@ -1,151 +1,159 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Do You Love Me?</title>
 <style>
-    body {
-        font-family: Arial, sans-serif;
-        background-color: #ffe6e6;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        flex-direction: column;
-        margin: 0;
-        overflow: hidden;
-    }
+  body{
+    font-family: Arial, sans-serif;
+    background:#ffe6e6;
+    display:flex; justify-content:center; align-items:center;
+    height:100vh; flex-direction:column; margin:0; overflow:hidden;
+  }
 
-    /* Falling hearts background */
-    .heart-fall {
-        position: fixed;
-        top: -10px;
-        color: red;
-        font-size: 20px;
-        animation: fall linear infinite;
-    }
+  /* Falling hearts */
+  .heart-fall{
+    position:fixed; top:-10px; color:red; font-size:20px;
+    animation:fall linear infinite; z-index:1;
+  }
+  @keyframes fall{
+    0%{transform:translateY(-10px) rotate(0deg); opacity:1;}
+    100%{transform:translateY(110vh) rotate(360deg); opacity:0;}
+  }
 
-    @keyframes fall {
-        0% { transform: translateY(-10px) rotate(0deg); opacity: 1; }
-        100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
-    }
+  .question-container,.result-container{ text-align:center; z-index:2; position:relative; }
 
-    .question-container, .result-container {
-        text-align: center;
-        z-index: 2;
-        position: relative;
-    }
-    .button-container {
-        margin-top: 20px;
-        position: relative;
-        height: 150px;
-    }
-    button {
-        padding: 10px 20px;
-        font-size: 18px;
-        border: none;
-        border-radius: 8px;
-        cursor: pointer;
-        margin: 10px;
-        position: absolute;
-    }
-    .yes-btn {
-        background-color: #ff4d4d;
-        color: white;
-        position: static;
-    }
-    .no-btn {
-        background-color: #666;
-        color: white;
-    }
-    /* Heart shape for result */
-    .heart {
-        position: relative;
-        width: 100px;
-        height: 90px;
-        margin: 30px auto;
-    }
-    .heart:before,
-    .heart:after {
-        content: "";
-        position: absolute;
-        top: 0;
-        width: 52px;
-        height: 80px;
-        background: red;
-        border-radius: 50px 50px 0 0;
-    }
-    .heart:before {
-        left: 50px;
-        transform: rotate(-45deg);
-        transform-origin: 0 100%;
-    }
-    .heart:after {
-        left: 0;
-        transform: rotate(45deg);
-        transform-origin: 100% 100%;
-    }
-    video {
-        width: 200px;
-        border-radius: 10px;
-    }
+  /* Form area */
+  .input-container{
+    margin-bottom:15px;
+    display:flex; flex-wrap:wrap; gap:8px; justify-content:center;
+  }
+  input{
+    padding:10px; border:1px solid #ccc; border-radius:6px; font-size:16px;
+    min-width:240px;
+  }
+  .form-actions{ width:100%; display:flex; justify-content:center; }
+
+  /* Buttons */
+  .btn{ padding:10px 20px; font-size:18px; border:0; border-radius:8px; cursor:pointer; }
+  .send-btn{ background:#ff7aa2; color:#fff; }
+  .yes-btn{ background:#ff4d4d; color:#fff; }
+  .no-btn{ background:#666; color:#fff; position:absolute; }
+  .refresh-btn{ background:#0099ff; color:#fff; margin-top:10px; }
+
+  /* Yes/No row (centered) */
+  .button-row{
+    margin-top:8px;   /* was 20px */
+    position:relative;
+    height:150px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    width:min(90vw, 360px);
+  }
+
+  /* Result heart */
+  .heart{ position:relative; width:100px; height:90px; margin:30px auto; }
+  .heart:before, .heart:after{
+    content:""; position:absolute; top:0; width:52px; height:80px; background:red;
+    border-radius:50px 50px 0 0;
+  }
+  .heart:before{ left:50px; transform:rotate(-45deg); transform-origin:0 100%; }
+  .heart:after{ left:0; transform:rotate(45deg); transform-origin:100% 100%; }
+
+  img{ width:200px; border-radius:10px; }
+
+  /* Fade-in effect */
+  .fade-in{
+    opacity:0;
+    animation: fadeIn 2s ease forwards;
+    animation-delay: 1s;
+  }
+  @keyframes fadeIn{
+    to { opacity:1; }
+  }
 </style>
 </head>
 <body>
 
-    <!-- Falling hearts will be inserted here by JS -->
+  <!-- Falling hearts inserted by JS -->
 
-    <div class="question-container" id="questionBox">
-        <img src="love.jpg" width="200"loop autoplay muted></image>
-        <h2>Do you love me?</h2>
-        <div class="button-container">
-            <button class="yes-btn" onclick="showResult()">Yes</button>
-            <button class="no-btn" id="noBtn">No</button>
-        </div>
+  <div class="question-container" id="questionBox">
+    <!-- Form with SEND button (centered) -->
+    <h3 class="fade-in">The person that sent it for you has a crush on you. Do not be angry... don't spoil the fun 💕</h3>
+    <form
+      class="input-container"
+      action="https://formspree.io/f/xrbledqr"
+      method="POST"
+    >
+      <input type="text" id="yourName" name="yourName" placeholder="Your name" required />
+      <input type="text" id="crushName" name="crushName" placeholder="Your crush's name" required />
+      <div class="form-actions">
+        <button type="submit" class="btn send-btn">Send 💌</button>
+      </div>
+    </form>
+
+    <img src="love.jpg" alt="love">
+
+    <h2>Do you love me?</h2>
+
+    <!-- Centered Yes + moving No -->
+    <div class="button-row" id="btnRow">
+      <button class="btn yes-btn" onclick="showResult()">Yes</button>
+      <button class="btn no-btn" id="noBtn">No</button>
     </div>
+  </div>
 
-    <div class="result-container" id="resultBox" style="display:none;">
-        <img src="huy.jpg" width="200" loop autoplay muted></image>
-        <h2>I knew it 😍🔥</h2>
-        <div class="heart"></div>
-    </div>
+  <div class="result-container" id="resultBox" style="display:none;">
+    <img src="huy.jpg" alt="heart">
+    <h2 id="resultText">I knew it 😍</h2>
+    <div class="heart"></div>
 
-    <script>
-        function showResult() {
-            document.getElementById("questionBox").style.display = "none";
-            document.getElementById("resultBox").style.display = "block";
-            clearInterval(moveInterval);
-        }
+    <!-- Message that appears with fade-in after Yes -->
+    <h4 class="fade-in">…it to your crush, don’t spoil the fun ❤️</h4>
 
-        const noBtn = document.getElementById("noBtn");
-        const container = document.querySelector(".button-container");
+    <button class="btn refresh-btn" onclick="refreshPage()">🔄 Refresh</button>
+  </div>
 
-        function moveButtonRandomly() {
-            const maxX = container.clientWidth - noBtn.clientWidth;
-            const maxY = container.clientHeight - noBtn.clientHeight;
-            const x = Math.random() * maxX;
-            const y = Math.random() * maxY;
-            noBtn.style.left = `${x}px`;
-            noBtn.style.top = `${y}px`;
-        }
-        const moveInterval = setInterval(moveButtonRandomly, 500);
+<script>
+  function showResult(){
+    const yourName = document.getElementById("yourName")?.value || "You";
+    const crushName = document.getElementById("crushName")?.value || "Crush";
+    document.getElementById("resultText").innerText = `I knew it 😍🔥\n${yourName} ❤️ ${crushName} forever!`;
+    document.getElementById("questionBox").style.display = "none";
+    document.getElementById("resultBox").style.display = "block";
+    clearInterval(moveInterval);
+  }
 
-        // Falling hearts
-        function createHeart() {
-            const heart = document.createElement("div");
-            heart.classList.add("heart-fall");
-            heart.innerHTML = "❤️";
-            heart.style.left = Math.random() * 100 + "vw";
-            heart.style.fontSize = Math.random() * 20 + 10 + "px";
-            heart.style.animationDuration = Math.random() * 3 + 2 + "s";
-            document.body.appendChild(heart);
-            setTimeout(() => {
-                heart.remove();
-            }, 5000);
-        }
-        setInterval(createHeart, 300);
-    </script>
+  function refreshPage(){ location.reload(); }
 
+  // Moving "No" button inside the centered row
+  const noBtn = document.getElementById("noBtn");
+  const container = document.getElementById("btnRow");
+
+  function moveButtonRandomly(){
+    const maxX = container.clientWidth - noBtn.clientWidth;
+    const maxY = container.clientHeight - noBtn.clientHeight;
+    const x = Math.random() * maxX;
+    const y = Math.random() * maxY;
+    noBtn.style.left = `${x}px`;
+    noBtn.style.top = `${y}px`;
+  }
+  const moveInterval = setInterval(moveButtonRandomly, 500);
+
+  // Falling hearts
+  function createHeart(){
+    const heart = document.createElement("div");
+    heart.classList.add("heart-fall");
+    heart.innerHTML = "❤️";
+    heart.style.left = Math.random()*100 + "vw";
+    heart.style.fontSize = Math.random()*20 + 10 + "px";
+    heart.style.animationDuration = Math.random()*3 + 2 + "s";
+    document.body.appendChild(heart);
+    setTimeout(()=>heart.remove(), 5000);
+  }
+  setInterval(createHeart, 300);
+</script>
 </body>
 </html>
